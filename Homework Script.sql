@@ -248,3 +248,39 @@ ON t4.rental_id = p.rental_id
 GROUP BY category
 ORDER BY sales DESC
 LIMIT 5;
+
+#8a
+CREATE VIEW top_five_genres AS
+SELECT category
+,SUM(amount) AS sales
+FROM payment as p
+INNER JOIN (
+	SELECT category
+	,rental_id
+	FROM rental as r
+	INNER JOIN (
+		SELECT category
+		,inventory_id
+		FROM inventory AS i
+		INNER JOIN (
+			SELECT category
+			,film_id
+			FROM film_category AS fc
+			INNER JOIN (
+				SELECT `name` AS category
+				,category_id
+				FROM category) AS t1
+			ON fc.category_id = t1.category_id) AS t2
+		ON i.film_id = t2.film_id) AS t3
+	ON t3.inventory_id = r.inventory_id) AS t4
+ON t4.rental_id = p.rental_id
+GROUP BY category
+ORDER BY sales DESC
+LIMIT 5;
+
+#8b
+SELECT * FROM top_five_genres;
+
+#8c
+DROP VIEW top_five_genres
+
